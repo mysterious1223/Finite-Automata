@@ -24,15 +24,21 @@ class FA_String_Parser:
     def CheckIfListContainsString (myString, myList):
         for i in myList:
             if myString == i:
+                
                 return True
         return False
+    #mylist = list of all states and mystringlist is all accept states
     @staticmethod
     def CheckIfListContainsList (myStringList, myList):
+
         count = 0
-        for i in myStringList:
-            for j in myList:
+        for i in myList:
+            
+
+            for j in myStringList:
                 if (i == j):
                     count += 1
+                    
 
         if (count == len (myStringList)):
             return True
@@ -63,8 +69,10 @@ def init_call ():
 
     #check for dupes and process before going onto the next step
     s_states = input ("Please enter the states seperated by comma :")
+    
+    s_states=s_states.strip()
+    s_states=s_states.replace(" ","")
     print (s_states)
-
     #if true crash
     if (FA_String_Parser.CheckStringForDuplicate (",",s_states)):
         print ("[!] Duplicate states please enter unique states!")
@@ -83,7 +91,8 @@ def init_call ():
 
     s_alphabet = input ("Please enter the alphabet seperated by comma :")
     print (s_alphabet)
-
+    s_alphabet=s_alphabet.strip()
+    s_alphabet=s_alphabet.replace(" ","")
 
     if (FA_String_Parser.CheckStringForDuplicate (",",s_alphabet)):
         print ("[!] Duplicate alphabet please enter unique alphabet!")
@@ -96,7 +105,8 @@ def init_call ():
 
     s_start = input ("Please enter the start state (must be one of the previously entered states) : ")
     print (s_start)
-
+    s_start=s_start.strip()
+    s_start=s_start.replace(" ","")
     if (not FA_String_Parser.CheckIfListContainsString (s_start, states)):
         print ("[!] State was not found in state list!")
         init_call ()
@@ -104,8 +114,9 @@ def init_call ():
 
     s_accept = input ("Please enter the accept states seperated by comma : ")
     print (s_accept)
-
-
+    s_accept=s_accept.strip()
+    s_accept=s_accept.replace(" ","")
+    
     if (FA_String_Parser.CheckStringForDuplicate (",",s_accept)):
         print ("[!] Duplicate accept states please enter unique accept states!")
         init_call ()
