@@ -69,22 +69,43 @@ class StateHandle:
     def AppendState (self, s):
         self.list_of_states.append (s)
     def GetStateBySymbol (self, symbol):
-        for s in self.list_of_states:
-            if symbol == s.symbol:
-                return s
-        return None
+        sym_list = FA_String_Parser.ParseToList (",", symbol)
+        listofstates = []
+        for i in sym_list:
+            for s in self.list_of_states:
+                if i == s.symbol:
+                    listofstates.append (s)
+
+        return listofstates
 class Delta:
     thisState = State
     input = ""
-    outState = State
+    outState = []
     def __init__ (self, thisState, input, outState):
 
         self.thisState = thisState
         self.input = input
         self.outState = outState
-    def print_info (self):
-        print ("Delta of " + self.thisState.symbol + " at " + self.input + " is state " + self.outState.symbol)
 
+    def print_info (self):
+        if not self.outState == None:  
+            print ("Delta of " + self.thisState.symbol + " at " + self.input + " is state " + self.getOutStates())
+        else:
+            print ("Delta of " + self.thisState.symbol + " at " + self.input + " is state EMPTY")
+
+
+    def getOutStates (self):
+
+        StateMaster = ""
+        for i in self.outState:
+            if StateMaster != "":
+                StateMaster = StateMaster + ","
+            StateMaster = StateMaster + i.symbol
+
+
+        if StateMaster != "":
+            return StateMaster
+        return "Empty"
 
 class Deltafunction:
     deltalist = []
@@ -108,7 +129,7 @@ class FiniteAuto:
           
 
         # use the above variable to create our states
-
+        
         for s in states:
             tempState = State (s, False, False)
             
@@ -137,6 +158,7 @@ class FiniteAuto:
         
 
         # fix this to restart on error - Create a function to handle this
+        # delta needs to take a list of states as out state
         for s in self.NFAStates.list_of_states:
             print ("Delta of " + s.symbol)
 
@@ -145,12 +167,15 @@ class FiniteAuto:
                 i_input = i_input.strip()
                 i_input = i_input.replace (" ", "")
                 # we need to find the output state
+                # we can just rework this to return a list
                 outState = self.NFAStates.GetStateBySymbol (i_input)
 
-                if outState == None:
-                    print ("[!] error could not locate inputted state")
-                    quit()
-                    break
+                if outState == None and i_input == "":
+                    print ("Blank state selected")
+                #elif outState == None and i_input != "":
+                    #print ("Multiple states selected")
+
+                    
                 # create delta
                 self.NFADelta.CreateDelta (s, i, outState)
 
@@ -166,6 +191,8 @@ class FiniteAuto:
            i.print_details()
     def PrintNFATable(self):
         data = []
+        
+        #for d in self.NFADelta:
 
 
 
