@@ -182,20 +182,29 @@ class FiniteAuto:
         for i in self.NFADelta.deltalist:
             i.print_info()
 
-
+        self.PrintNFATable()
 
 
     def list_states_debug_nfa (self):
        
        for i in self.NFAStates.list_of_states:
            i.print_details()
+
     def PrintNFATable(self):
         data = []
-        
-        #for d in self.NFADelta:
+        header = ["delta"]
 
+        for a in self.alphabet:
+            header.append (a)
 
+        data.append (header)
 
+        prev_d = ""
+        row = []
+        for d in self.NFADelta.deltalist:
+            #fix
+        table = AsciiTable(data)
+        print (table.table)
 
 def init_call ():
 
@@ -271,6 +280,19 @@ def init_call ():
 
 #data.append (["column1","column2"])
 
+#table = AsciiTable(data)
+
+#print (table.table)
+
+#data = []
+
+#r1 = ["a", "b", "c"]
+
+#r2 = ["a1", "b1", "c1"]
+
+#data.append (r1)
+
+#data.append (r2)
 #table = AsciiTable(data)
 
 #print (table.table)
