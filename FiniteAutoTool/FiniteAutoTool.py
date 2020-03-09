@@ -1,6 +1,6 @@
 import os
 import sys
-
+from terminaltables import AsciiTable
 class FA_String_Parser:
 
     #convert string to array
@@ -45,22 +45,129 @@ class FA_String_Parser:
         else:
             return False
 
-            
+class State:
+
+    symbol = ""
+    accepting = False
+    starting = False
+
+    def __init__ (self, symbol, accepting, starting):
+        self.symbol = symbol
+        self.accepting = accepting
+        self.starting = starting
+    def print_details (self):
+        print ("State: " + self.symbol, ", Accepting: " + str (self.accepting), ", Starting: " + str (self.starting))
+
+class StateHandle:
+ 
+    list_of_states = []
+
+    def CreateState (self,symbol, accepting, starting):
+        myState = State (symbol, accepting, starting)
+        self.list_of_states.append (myState)
+        print ("state created: " + symbol)
+    def AppendState (self, s):
+        self.list_of_states.append (s)
+    def GetStateBySymbol (self, symbol):
+        for s in self.list_of_states:
+            if symbol == s.symbol:
+                return s
+        return None
+class Delta:
+    thisState = State
+    input = ""
+    outState = State
+    def __init__ (self, thisState, input, outState):
+
+        self.thisState = thisState
+        self.input = input
+        self.outState = outState
+    def print_info (self):
+        print ("Delta of " + self.thisState.symbol + " at " + self.input + " is state " + self.outState.symbol)
+
+
+class Deltafunction:
+    deltalist = []
+
+    def CreateDelta (self, state , input, outstate):
+        d = Delta (state, input, outstate)
+        self.deltalist.append (d)
+    
 class FiniteAuto:
 
-    states = []
+    s_states = []
     alphabet = []
-    startpoint = ""
-    acceptstates = []
+    s_startpoint = ""
+    s_acceptstates = []
+    NFAStates = StateHandle()
+    NFADelta = Deltafunction()
 
     def __init__ (self, states, alphabet, startpoint, acceptstates):
         print ("[+] initializing Finite App")
-        self.states = states
         self.alphabet = alphabet
-        self.startpoint = startpoint
-        self.acceptstates = acceptstates
+          
 
+        # use the above variable to create our states
+
+        for s in states:
+            tempState = State (s, False, False)
+            
+            if s == startpoint:
+                tempState.starting = True
+            
+            for a in acceptstates:
+                if s == a:
+                    tempState.accepting = True
+                    break
+                else:
+                    continue
+            self.NFAStates.AppendState (tempState)
+        
+        
+
+        self.list_states_debug_nfa()
+
+        #states created, now we need to create delta
+        # loop through states and ask user for inputs (size of alphabet)
     
+        #self.NFADelta.CreateDelta (tempState, "0", tempState2)
+
+        #for i in self.NFADelta.deltalist:
+            #i.print_info()
+        
+
+        # fix this to restart on error - Create a function to handle this
+        for s in self.NFAStates.list_of_states:
+            print ("Delta of " + s.symbol)
+
+            for i in self.alphabet:
+                i_input = input("At " + i + " state: ")
+                i_input = i_input.strip()
+                i_input = i_input.replace (" ", "")
+                # we need to find the output state
+                outState = self.NFAStates.GetStateBySymbol (i_input)
+
+                if outState == None:
+                    print ("[!] error could not locate inputted state")
+                    quit()
+                    break
+                # create delta
+                self.NFADelta.CreateDelta (s, i, outState)
+
+        for i in self.NFADelta.deltalist:
+            i.print_info()
+
+
+
+
+    def list_states_debug_nfa (self):
+       
+       for i in self.NFAStates.list_of_states:
+           i.print_details()
+    def PrintNFATable(self):
+        data = []
+
+
 
 
 def init_call ():
@@ -133,6 +240,13 @@ def init_call ():
 
 # create a finite auto class to process and create a table
 
+#data = []
+
+#data.append (["column1","column2"])
+
+#table = AsciiTable(data)
+
+#print (table.table)
 
 fa = init_call ()
 
