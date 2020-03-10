@@ -199,10 +199,20 @@ class FiniteAuto:
 
         data.append (header)
 
-        prev_d = ""
+        currSym = ""
         row = []
         for d in self.NFADelta.deltalist:
-            #fix
+            if currSym == "":
+                row.append(d.thisState.symbol)
+                row.append(d.getOutStates())
+                print (d.getOutStates())
+                currSym = d.thisState.symbol
+            else:
+                row.append(d.getOutStates())
+                data.append (list (row))
+                row.clear()
+                currSym = ""
+
         table = AsciiTable(data)
         print (table.table)
 
